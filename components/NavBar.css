@@ -1,0 +1,63 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px clamp(20px, 5vw, 56px);
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.wordmark {
+  font-family: "Fraunces", serif;
+  font-size: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--espresso);
+}
+
+.topbar-links {
+  display: none;
+  gap: 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.topbar-links a {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--espresso-soft);
+}
+
+@media (min-width: 760px) {
+  .topbar-links {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-phone {
+  display: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--espresso-soft);
+  text-decoration: none;
+}
+
+@media (min-width: 600px) {
+  .topbar-phone {
+    display: inline-block;
+  }
+}

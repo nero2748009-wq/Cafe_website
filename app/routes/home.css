@@ -1,12 +1,7 @@
-/* ========================================
-   Fonts
-   (@import must stay at the very top of the file)
-======================================== */
+/* Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap");
 
-/* ========================================
-   Design tokens (colours)
-======================================== */
+/* Design tokens (shared by NavBar.css and Footer.css) */
 :root {
   --cream: #f5ecdd;
   --cream-deep: #ebdec3;
@@ -19,13 +14,11 @@
   --line: rgba(58, 42, 28, 0.14);
 }
 
-/* ========================================
-   Base / reset
-======================================== */
 * {
   box-sizing: border-box;
 }
 
+/* Base */
 body {
   margin: 0;
   background: var(--cream);
@@ -57,78 +50,7 @@ button {
   font-family: inherit;
 }
 
-/* ========================================
-   Top bar (sits above the hero, not over it)
-======================================== */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 18px clamp(20px, 5vw, 56px);
-  background: var(--cream);
-  border-bottom: 1px solid var(--line);
-
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.wordmark {
-  font-family: "Fraunces", serif;
-  font-size: 20px;
-  font-weight: 600;
-  text-decoration: none;
-  color: var(--espresso);
-}
-
-/* Nav links are hidden on small screens, shown from 760px up */
-.topbar-links {
-  display: none;
-  gap: 26px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.topbar-links a {
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--espresso-soft);
-}
-
-@media (min-width: 760px) {
-  .topbar-links {
-    display: flex;
-    align-items: center;
-  }
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Phone number is hidden on very small screens */
-.topbar-phone {
-  display: none;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--espresso-soft);
-  text-decoration: none;
-}
-
-@media (min-width: 600px) {
-  .topbar-phone {
-    display: inline-block;
-  }
-}
-
-/* ========================================
-   Buttons
-======================================== */
+/* Buttons (also used by NavBar) */
 .btn {
   display: inline-block;
   text-decoration: none;
@@ -155,80 +77,6 @@ button {
   cursor: not-allowed;
 }
 
-/* ========================================
-   Hero (scroll-driven frame animation)
-======================================== */
-
-/* Tall wrapper = the scroll distance. Taller = slower animation. */
-.hero-wrap {
-  position: relative;
-  height: 380vh;
-}
-
-/* Stays pinned to the screen while the wrapper scrolls past */
-.hero-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
-  background: var(--cream);
-}
-
-/* The <canvas> that frames are drawn onto */
-.hero-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-/* Little mouse-shaped "scroll" indicator at the bottom */
-.scroll-hint {
-  position: absolute;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%);
-
-  width: 30px;
-  height: 46px;
-  border: 2px solid rgba(58, 42, 28, 0.5);
-  border-radius: 16px;
-}
-
-.scroll-hint::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 8px;
-
-  width: 4px;
-  height: 8px;
-  border-radius: 2px;
-
-  background: var(--caramel-dark);
-  transform: translateX(-50%);
-  animation: dot 1.6s ease-in-out infinite;
-}
-
-@keyframes dot {
-  0% {
-    opacity: 1;
-    top: 8px;
-  }
-  70% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-    top: 24px;
-  }
-}
-
-/* ========================================
-   Shared section styles
-======================================== */
 section {
   padding: clamp(64px, 10vh, 110px) clamp(20px, 5vw, 56px);
 }
@@ -247,9 +95,93 @@ section {
   text-transform: uppercase;
 }
 
-/* ========================================
-   Intro
-======================================== */
+/* Hero */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 88vh;
+  padding: clamp(80px, 14vh, 140px) clamp(20px, 5vw, 56px);
+
+  background-color: var(--espresso); /* shown while the photo loads */
+  background-size: cover;
+  background-position: center;
+  color: #fff9ef;
+}
+
+/* Dark overlay so the text is readable on any photo */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(34, 23, 14, 0.15), rgba(34, 23, 14, 0.15)),
+    linear-gradient(90deg, rgba(34, 23, 14, 0.8), rgba(34, 23, 14, 0.4));
+}
+
+@media (max-width: 700px) {
+  .hero::before {
+    background: rgba(34, 23, 14, 0.68);
+  }
+}
+
+.hero-inner {
+  width: 100%;
+}
+
+.hero .kicker {
+  color: #e9c796;
+}
+
+.hero h1 {
+  font-size: clamp(38px, 7vw, 76px);
+  line-height: 1.05;
+  max-width: 14ch;
+  color: #fff9ef;
+}
+
+.hero p {
+  margin: 20px 0 30px;
+  max-width: 46ch;
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(255, 249, 239, 0.88);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-light {
+  background: transparent;
+  color: #fff9ef;
+  border-color: rgba(255, 249, 239, 0.7);
+}
+
+.btn-light:hover {
+  background: rgba(255, 249, 239, 0.14);
+  filter: none;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 40px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(255, 249, 239, 0.8);
+}
+
+.hero-meta a {
+  text-decoration: underline;
+  text-decoration-color: #e9c796;
+}
+
 .intro {
   display: grid;
   grid-template-columns: 1fr;
@@ -277,9 +209,7 @@ section {
   max-width: 50ch;
 }
 
-/* ========================================
-   Menu
-======================================== */
+/* Menu */
 .menu {
   background: var(--cream-deep);
 }
@@ -288,7 +218,6 @@ section {
   font-size: clamp(28px, 4vw, 44px);
 }
 
-/* Category tabs */
 .tabs {
   display: flex;
   gap: 10px;
@@ -319,7 +248,6 @@ section {
   margin-bottom: 18px;
 }
 
-/* Horizontally scrolling row of cards */
 .menu-scroll {
   display: flex;
   gap: 20px;
@@ -358,7 +286,6 @@ section {
   background: var(--cream-deep);
 }
 
-/* Text stand-in shown until a real photo is added */
 .menu-card .thumb.placeholder {
   display: flex;
   align-items: center;
@@ -399,9 +326,7 @@ section {
   font-size: 15px;
 }
 
-/* ========================================
-   Order online
-======================================== */
+/* Order */
 .order-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -438,7 +363,6 @@ section {
   line-height: 1.5;
 }
 
-/* List of orderable items (the 1px gap shows the border colour as dividers) */
 .order-list {
   display: flex;
   flex-direction: column;
@@ -472,7 +396,6 @@ section {
   margin-top: 2px;
 }
 
-/* − 0 + quantity control */
 .qty {
   display: flex;
   align-items: center;
@@ -497,7 +420,6 @@ section {
   font-weight: 700;
 }
 
-/* Cart summary card (sticks under the top bar on desktop) */
 .cart-box {
   background: var(--card);
   border: 1px solid var(--line);
@@ -546,7 +468,6 @@ section {
   margin-top: 18px;
 }
 
-/* "Order noted" message, hidden until .show is added */
 .confirm-msg {
   display: none;
   margin-top: 14px;
@@ -564,9 +485,7 @@ section {
   display: block;
 }
 
-/* ========================================
-   Visit / Contact
-======================================== */
+/* Visit / Contact */
 .visit {
   background: var(--cream-deep);
   border-top: 1px solid var(--line);
@@ -614,22 +533,7 @@ section {
   text-decoration-color: var(--caramel-dark);
 }
 
-/* "Closed now" indicator */
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 13.5px;
-  font-weight: 700;
-  margin-top: 4px;
-}
 
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #b5503e;
-}
 
 .map-frame {
   border: 1px solid var(--line);
@@ -650,25 +554,4 @@ section {
   font-size: 14px;
   color: var(--caramel-dark);
   text-decoration: underline;
-}
-
-/* ========================================
-   Footer
-======================================== */
-footer {
-  padding: 34px clamp(20px, 5vw, 56px);
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 14px;
-
-  color: var(--espresso-soft);
-  font-size: 13px;
-  border-top: 1px solid var(--line);
-}
-
-footer a {
-  color: var(--caramel-dark);
-  text-decoration: none;
 }

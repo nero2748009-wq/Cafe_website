@@ -1,17 +1,14 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import "./home.css"
+import NavBar from "../../components/NavBar"
+import Footer from "../../components/Footer"
 
 /* ==========================================================
-   Hero frame animation settings
+   Hero background image
    ----------------------------------------------------------
-   Frames live in public/frames/ and are named f_001.jpg,
-   f_002.jpg ... Set FRAME_COUNT to the number printed by:
-     ls public/frames | wc -l
 ========================================================== */
-const FRAME_COUNT = 59
-
-const frameSrc = (i: number) =>
-  `/frames/f_${String(i + 1).padStart(3, "0")}.jpg`
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1690983326252-ce6205fb7055?w=1920&auto=format&fit=crop&q=90&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2FmZSUyMGJhY2tncm91bmR8ZW58MHwwfDB8fHww"
 
 /* ==========================================================
    Menu data
@@ -65,8 +62,6 @@ const rs = (n: number) => `Rs. ${n}`
 
 export default function Home() {
   /* ---------- Refs ---------- */
-  const wrapRef = useRef<HTMLDivElement>(null) // tall scroll wrapper
-  const canvasRef = useRef<HTMLCanvasElement>(null) // where frames are drawn
   const menuScrollRef = useRef<HTMLDivElement>(null) // horizontal menu row
 
   /* ---------- State ---------- */
@@ -75,83 +70,6 @@ export default function Home() {
   const [cart, setCart] = useState<Record<string, number>>({})
   // Whether the "Order noted!" message is visible
   const [ordered, setOrdered] = useState(false)
-
-  /* ==========================================================
-     Scroll-scrubbed hero animation
-     ----------------------------------------------------------
-     1. Preload every frame as an <img>.
-     2. On scroll, work out how far through the hero we are
-        (0 to 1) and convert that to a frame number.
-     3. A requestAnimationFrame loop eases toward that frame
-        and draws it on the canvas.
-  ========================================================== */
-  useEffect(() => {
-    const wrap = wrapRef.current
-    const canvas = canvasRef.current
-    const ctx = canvas?.getContext("2d")
-    if (!wrap || !canvas || !ctx) return
-
-    const images: HTMLImageElement[] = []
-    let current = 0 // frame position we're currently showing (smoothed)
-    let target = 0 // frame position the scroll wants
-    let lastDrawn = -1 // avoid redrawing the same frame
-    let rafId = 0
-
-    // Preload all frames
-    for (let i = 0; i < FRAME_COUNT; i++) {
-      const img = new Image()
-
-      // The first frame sets the canvas size and is drawn immediately
-      if (i === 0) {
-        img.onload = () => {
-          canvas.width = img.naturalWidth
-          canvas.height = img.naturalHeight
-          ctx.drawImage(img, 0, 0)
-          lastDrawn = 0
-        }
-      }
-
-      img.src = frameSrc(i)
-      images.push(img)
-    }
-
-    // Convert scroll position into a target frame number
-    const updateTarget = () => {
-      const rect = wrap.getBoundingClientRect()
-      const total = wrap.offsetHeight - window.innerHeight
-      if (total <= 0) return
-      const progress = Math.max(0, Math.min(1, -rect.top / total))
-      target = progress * (FRAME_COUNT - 1)
-    }
-
-    // Runs every screen refresh: ease toward the target and draw
-    const tick = () => {
-      // 0.2 = how tightly we follow scroll. 1 = instant, lower = floatier
-      current += (target - current) * 0.2
-
-      const idx = Math.round(current)
-      const img = images[idx]
-
-      if (idx !== lastDrawn && img && img.complete && canvas.width) {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-        lastDrawn = idx
-      }
-
-      rafId = requestAnimationFrame(tick)
-    }
-
-    window.addEventListener("scroll", updateTarget, { passive: true })
-    window.addEventListener("resize", updateTarget)
-    updateTarget()
-    rafId = requestAnimationFrame(tick)
-
-    // Cleanup when the component unmounts
-    return () => {
-      cancelAnimationFrame(rafId)
-      window.removeEventListener("scroll", updateTarget)
-      window.removeEventListener("resize", updateTarget)
-    }
-  }, [])
 
   /* ==========================================================
      Menu tabs
@@ -191,41 +109,37 @@ export default function Home() {
 
   return (
     <>
-      {/* ===== Top bar (sits above the hero, not over it) ===== */}
-      <div className="topbar">
-        <a href="#top" className="wordmark">
-          Pick Me Cafe
-        </a>
 
-        <ul className="topbar-links">
-          <li>
-            <a href="#menu">Menu</a>
-          </li>
-          <li>
-            <a href="#order">Order Online</a>
-          </li>
-          <li>
-            <a href="#visit">Visit</a>
-          </li>
-        </ul>
+    <NavBar />
+      {/* ===== Hero ===== */}
+      <section
+        id="top"
+        className="hero"
+        style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+      >
+        <div className="section-inner hero-inner">
+          <div className="kicker">Pick Me Cafe · Hetauda</div>
+          <h1>Coffee worth slowing down for.</h1>
+          <p>
+            Fresh coffee, good food, and cake in Hetauda. Take a look at the
+            menu, or just pull up a chair.
+          </p>
 
-        <div className="topbar-right">
-          <a href="tel:+9779768578666" className="topbar-phone">
-            +977 976-8578666
-          </a>
-          <a href="#order" className="btn btn-caramel">
-            Order Online
-          </a>
+          <div className="hero-actions">
+            <a href="#menu" className="btn btn-caramel">
+              See the menu
+            </a>
+            <a href="#order" className="btn btn-light">
+              Order online
+            </a>
+          </div>
+
+          <div className="hero-meta">
+            <span>CX8P+87P, Hetauda</span>
+            <a href="tel:+9779768578666">+977 976-8578666</a>
+          </div>
         </div>
-      </div>
-
-      {/* ===== Hero: scroll-driven frame animation ===== */}
-      <div id="top" className="hero-wrap" ref={wrapRef}>
-        <div className="hero-sticky">
-          <canvas ref={canvasRef} className="hero-canvas" />
-          <div className="scroll-hint"></div>
-        </div>
-      </div>
+      </section>
 
       {/* ===== Intro ===== */}
       <section>
@@ -395,10 +309,7 @@ export default function Home() {
               <div className="visit-detail-value">
                 Opens 6 AM Sunday
                 {/* Static text copied from Google; update if hours change */}
-                <div className="status-pill">
-                  <span className="status-dot"></span>
-                  Closed now — as listed on Google
-                </div>
+              
               </div>
             </div>
 
@@ -433,14 +344,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== Footer ===== */}
-      <footer>
-        <div>© 2026 Pick Me Cafe — Hetauda, Bagmati Province</div>
-        <div>
-          CX8P+87P, Hetauda-4 &nbsp;·&nbsp;{" "}
-          <a href="tel:+9779768578666">+977 976-8578666</a>
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }

@@ -1,0 +1,17 @@
+footer {
+  padding: 34px clamp(20px, 5vw, 56px);
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 14px;
+
+  color: var(--espresso-soft);
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+}
+
+footer a {
+  color: var(--caramel-dark);
+  text-decoration: none;
+}
